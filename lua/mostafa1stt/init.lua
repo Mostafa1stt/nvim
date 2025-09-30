@@ -1,5 +1,6 @@
 require("mostafa1stt.keymap")
 vim.o.clipboard = "unnamedplus"
+vim.o.number = true
 vim.o.relativenumber = true -- Enable relative line numbers
 vim.o.tabstop = 4 -- Number of spaces a tab represents
 vim.o.shiftwidth = 4 -- Number of spaces for each indentation

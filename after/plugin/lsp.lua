@@ -7,7 +7,7 @@ lsp_zero.extend_lspconfig()
 -- Mason & Mason-LSPConfig Setup
 require('mason').setup({})
 require('mason-lspconfig').setup({
-  ensure_installed = { 'lua_ls'  },
+  ensure_installed = { 'lua_ls', 'ocamllsp' },
   handlers = {
     lsp_zero.default_setup,
   },
@@ -16,8 +16,8 @@ require('mason-lspconfig').setup({
 -- Custom on_attach function with keymaps
 local function attach_keymaps(bufnr)
   local opts = { buffer = bufnr }
-
   local map = vim.keymap.set
+
   map("n", "gd", vim.lsp.buf.definition, opts)
   map("n", "K", vim.lsp.buf.hover, opts)
   map("n", "<leader>vws", vim.lsp.buf.workspace_symbol, opts)
@@ -30,23 +30,24 @@ local function attach_keymaps(bufnr)
   map("i", "<C-h>", vim.lsp.buf.signature_help, opts)
 end
 
--- Set preferences and attach
+-- Attach keymaps once, via lsp_zero
 lsp_zero.on_attach(function(client, bufnr)
   attach_keymaps(bufnr)
 end)
 
+-- Preferences
 lsp_zero.set_preferences({
   suggest_lsp_servers = false,
   sign_icons = {
     error = "E",
     warn = "W",
     hint = "H",
-    info = "I"
+    info = "I",
   }
 })
 
 -- Lua language server custom config
-require('lspconfig').lua_ls.setup({
+vim.lsp.config("lua_ls", {
   settings = {
     Lua = {
       diagnostics = {
@@ -56,20 +57,20 @@ require('lspconfig').lua_ls.setup({
   }
 })
 
--- OCaml LSP manual setup
-require('lspconfig').ocamllsp.setup({
-  on_attach = function(client, bufnr)
-    attach_keymaps(bufnr)
-  end
-})
+-- OCaml LSP config
+vim.lsp.config("ocamllsp", {})
+
+-- Enable servers explicitly
+vim.lsp.enable({ "lua_ls", "ocamllsp" })
 
 -- nvim-cmp setup (completion)
 local cmp = require('cmp')
+
 cmp.setup({
   mapping = {
-    ['<C-p>'] = cmp.mapping.select_prev_item(),
-    ['<C-n>'] = cmp.mapping.select_next_item(),
-    ['<C-y>'] = cmp.mapping.confirm({ select = true }),
+    ['<Tab>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+    ['<S-Tab>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }),
     ['<C-Space>'] = cmp.mapping.complete(),
   },
   sources = {

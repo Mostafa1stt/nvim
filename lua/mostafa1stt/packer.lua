@@ -13,10 +13,10 @@ return require('packer').startup(function(use)
       requires = { {'nvim-lua/plenary.nvim'} }
   }
 use ({
-	"rose-pine/neovim",
-	as  = "rose-pine",
+	"polirritmico/monokai-nightasty.nvim",
+	as  = "monokai",
 	config = function()
-		vim.cmd("colorscheme rose-pine")
+		vim.cmd("colorscheme monokai-nightasty")
 	end
 })
 
